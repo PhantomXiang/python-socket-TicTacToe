@@ -3,23 +3,32 @@ A simple game using socket programming.
 
 ## 開發環境
 OS: Windows 10 Pro
+
 Build: [19042.1348](https://support.microsoft.com/en-us/topic/november-9-2021-kb5007186-os-builds-19041-1348-19042-1348-and-19043-1348-033ee59c-e9b7-4eaf-8ee7-b3512bb1a0aa)
 
 Programming Language: Python
+
 Version: [Python 3.9.9](https://www.python.org/downloads/release/python-399/)
+
 Modules:
+
 [NumPy 1.21.4](https://numpy.org/)
+
 [Pygame 2.1.0](https://pygame.org/)
+
 [Pygame menu 4.2.0](https://pygame.org/project/3165/)
 
 ## 程式簡介
 * 有GUI的圈叉遊戲，可以用來打發時間。
 * 至少且最多只能有2名玩家，其中一邊當server，另一邊當client。
 * 程式主畫面
+
 ![](https://i.imgur.com/N3ti5Af.png)
 * 規則說明
+
 ![](https://i.imgur.com/TF7Kr5j.png)
 * 遊戲畫面
+
 ![](https://i.imgur.com/7IdeZpN.png)
 
 ## 技術細節
