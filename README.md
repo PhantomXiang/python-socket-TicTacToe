@@ -18,6 +18,15 @@ Modules:
 
 [Pygame menu 4.2.0](https://pygame.org/project/3165/)
 
+## 參考資料
+[Socket Programming in Python (Guide)](https://realpython.com/python-sockets/)
+
+[Python的非阻塞式（non-blocking）socket通訊程式（二）：使用select程式庫](https://swf.com.tw/?p=1201)
+
+[Tic-tac-toe using Python and Pygame](https://github.com/AlejoG10/python-tictactoe-yt)
+
+[Menus - Pygame Tutorial](https://youtu.be/0RryiSjpJn0)
+
 ## 程式簡介
 * 有GUI的圈叉遊戲，可以用來打發時間。
 * 至少且最多只能有2名玩家，其中一邊當server，另一邊當client。
