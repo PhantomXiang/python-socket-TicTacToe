@@ -1,8 +1,8 @@
 # MODULES
 import numpy as np
 import pygame
+import pygame.locals
 import pygame_menu
-from pygame.locals import *
 import random
 import select
 import socket
@@ -85,9 +85,6 @@ def mark_space(row, col, player):
 def is_space_available(row, col):
 	return grid[row][col] == 0
 
-def is_grid_empty():
-	return np.all(grid == 0)
-
 def is_winner(player):
 	# vertical win check
 	for col in range(grid_size):
@@ -119,9 +116,9 @@ def draw_vertical_winning_line(col, player):
 	elif player == 2:
 		color = CIRCLE_COLOR
 
-	posX = col * space_size + space_size // 2
-	pygame.draw.line(screen, color, (posX, win_line_padding),
-					 (posX, screen_size - win_line_padding), win_line_width)
+	pos_x = col * space_size + space_size // 2
+	pygame.draw.line(screen, color, (pos_x, win_line_padding),
+					 (pos_x, screen_size - win_line_padding), win_line_width)
 
 def draw_horizontal_winning_line(row, player):
 	if player == 1:
@@ -129,9 +126,9 @@ def draw_horizontal_winning_line(row, player):
 	elif player == 2:
 		color = CIRCLE_COLOR
 
-	posY = row * space_size + space_size // 2
-	pygame.draw.line(screen, color, (win_line_padding, posY),
-					 (screen_size - win_line_padding, posY), win_line_width)
+	pos_y = row * space_size + space_size // 2
+	pygame.draw.line(screen, color, (win_line_padding, pos_y),
+					 (screen_size - win_line_padding, pos_y), win_line_width)
 
 def draw_diagonal_winning_line(player):
 	if player == 1:
@@ -214,11 +211,10 @@ def wait_server():
 				else:
 					screen.blit(text3, text2_rect)
 			# when player press Esc key
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE:
-					print('[server] connection canceled.')
-					s.close()
-					return
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+				print('[server] connection canceled.')
+				s.close()
+				return
 
 		pygame.display.update()
 
@@ -247,13 +243,13 @@ def wait_client(value):
 	screen.fill(BG_COLOR)
 	screen.blit(text1, text1_rect)
 	pygame.display.update()
-
-	s.settimeout(10)
+	
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.settimeout(10)
 	try:
 		s.connect((value, PORT))
-	except:
-		print('[client] connection falied.')
+	except socket.error as exc:
+		print('[client] ' + str(exc))
 		screen.blit(text4, text4_rect)
 		pygame.display.update()
 		time.sleep(2)
@@ -330,10 +326,10 @@ def game_server():
 			# when player clicked the screen
 			if event.type == pygame.MOUSEBUTTONDOWN and is_my_turn and not is_game_over:
 				# get mouse coordinates
-				mouseX, mouseY = event.pos
+				pos_x, pos_y = event.pos
 				# transform screen coordinates to grid coordinates
-				clicked_col = min(mouseX // space_size, grid_size - 1)
-				clicked_row = min(mouseY // space_size, grid_size - 1)
+				clicked_col = min(pos_x // space_size, grid_size - 1)
+				clicked_row = min(pos_y // space_size, grid_size - 1)
 
 				if is_space_available(clicked_row, clicked_col):
 					mark_space(clicked_row, clicked_col, order)
@@ -344,21 +340,19 @@ def game_server():
 					conn.sendall(outdata.encode())
 					is_my_turn = False
 			# when player press R key
-			if event.type == pygame.KEYDOWN and not is_grid_empty():
-				if event.key == pygame.K_r:
-					outdata = 'Restart'
-					conn.sendall(outdata.encode())
-					is_game_over = False
-					game_restart()
-					if order == 1:
-						is_my_turn = True
-					else:
-						is_my_turn = False
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+				outdata = 'Restart'
+				conn.sendall(outdata.encode())
+				is_game_over = False
+				game_restart()
+				if order == 1:
+					is_my_turn = True
+				else:
+					is_my_turn = False
 			# when player press Esc key
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE:
-					print('[server] connection closed.')
-					is_game_running = False
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+				print('[server] connection closed.')
+				is_game_running = False
 
 		pygame.display.update()
 
@@ -420,10 +414,10 @@ def game_client():
 			# when player clicked the screen
 			if event.type == pygame.MOUSEBUTTONDOWN and is_my_turn and not is_game_over:
 				# get mouse coordinates
-				mouseX, mouseY = event.pos
+				pos_x, pos_y = event.pos
 				# transform screen coordinates to grid coordinates
-				clicked_col = min(mouseX // space_size, grid_size - 1)
-				clicked_row = min(mouseY // space_size, grid_size - 1)
+				clicked_col = min(pos_x // space_size, grid_size - 1)
+				clicked_row = min(pos_y // space_size, grid_size - 1)
 
 				if is_space_available(clicked_row, clicked_col):
 					mark_space(clicked_row, clicked_col, order)
@@ -434,10 +428,9 @@ def game_client():
 					s.sendall(outdata.encode())
 					is_my_turn = False
 			# when player press Esc key
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE:
-					print('[client] connection closed.')
-					is_game_running = False
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+				print('[client] connection closed.')
+				is_game_running = False
 
 		pygame.display.update()
 
